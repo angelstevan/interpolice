@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./src/scss/style.scss">
+  <title>Tabla con Bootstrap</title>
+</head>
+<body>
+
+<div class="container mt-5">
+  <h2 class="mb-4">Listado de Ciudadano</h2>
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#AgregarModal">
+        <i class="bi bi-person-fill-add"> Agregar</i>
+    </button><br><br>
+  
+  <div class="table-responsive">
+    <table class="table table-striped table-hover table-bordered align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">Codigo</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Apellido</th>
+          <th scope="col">Apodo</th>
+          <th scope="col">Fecha_Nacimiento</th>
+          <th scope="col">Planeta_Origen</th>
+          <th scope="col">Planeta_Residencia</th>
+          <th scope="col">Foto</th>
+          <th scope="col">CodigoQR</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="contenido">
+        
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal Agregar-->
+<div class="modal fade" id="AgregarModal" tabindex="-1" aria-labelledby="AgregarModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="AgregarModalLabel">Agregar Ciudadano</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="row g-3" id="FormularioAgregar">
+
+        <div class="col-12">
+            <label for="codigo" class="form-label">Codigo</label>
+            <input type="text" class="form-control" id="codigo" placeholder="ej: B431">
+        </div>
+        <div class="col-md-6">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="nombre">
+        </div>
+        <div class="col-md-6">
+            <label for="apellido" class="form-label">Apellido</label>
+            <input type="text" class="form-control" id="apellido">
+        </div>
+        <div class="col-md-6">
+            <label for="apodo" class="form-label">Apodo</label>
+            <input type="text" class="form-control" id="apodo">
+        </div>
+        <div class="col-md-6">
+            <label for="estado" class="form-label">Estado</label>
+            <input type="number" class="form-control" id="estado" value="1" disabled>
+        </div>
+        <div class="col-12">    
+            <label for="fechaNacimiento" class="form-label">Fecha Nacimiento</label>
+            <input type="date" class="form-control" id="fechaNacimiento">
+        </div>
+        <div class="col-md-6">
+            <label for="palnetaOrigen" class="form-label">Planeta de Origen</label>
+            <input type="text" class="form-control" id="palnetaOrigen">
+        </div>
+        <div class="col-md-6">
+            <label for="planteResidencia" class="form-label">Planeta de Residencia</label>
+            <input type="text" class="form-control" id="planteResidencia">
+        </div>
+        <!-- <div class="col-12">
+            <label for="foto" class="form-label">Foto</label>
+            <input type="file" class="form-control" id="foto">
+        </div> -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Agregar Ciudadano</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar-->
+<div class="modal fade" id="EditarModal" tabindex="-1" aria-labelledby="EditarModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="EditarModalLabel">Editar Ciudadano</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="row g-3" id="FormularioEditar">
+            
+        <input type="hidden" class="form-control" id="codigoEditar">
+       
+        <div class="col-md-6">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="nombreEditar">
+        </div>
+        <div class="col-md-6">
+            <label for="apellido" class="form-label">Apellido</label>
+            <input type="text" class="form-control" id="apellidoEditar">
+        </div>
+        <div class="col-md-6">
+            <label for="apodo" class="form-label">Apodo</label>
+            <input type="text" class="form-control" id="apodoEditar">
+        </div>
+        <div class="col-md-6">
+            <label for="estado" class="form-label">Estado</label>
+            <input type="number" class="form-control" id="estadoEditar">
+        </div>
+        <div class="col-12">    
+            <label for="fechaNacimiento" class="form-label">Fecha Nacimiento</label>
+            <input type="date" class="form-control" id="fechaNacimientoEditar">
+        </div>
+        <div class="col-md-6">
+            <label for="palnetaOrigen" class="form-label">Planeta de Origen</label>
+            <input type="text" class="form-control" id="palnetaOrigenEditar">
+        </div>
+        <div class="col-md-6">
+            <label for="planteResidencia" class="form-label">Planeta de Residencia</label>
+            <input type="text" class="form-control" id="planteResidenciaEditar">
+        </div>
+        <!-- <div class="col-12">
+            <label for="foto" class="form-label">Foto</label>
+            <input type="file" class="form-control" id="foto">
+        </div> -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Editar Ciudadano</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="./src/js/ciudadano.js"></script>
+
+</body>
+</html>
