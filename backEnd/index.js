@@ -1,7 +1,9 @@
 import express from 'express';
 import 'dotenv/config';
 import cors from 'cors';
-import ciudadano from './src/ciudadano.js';
+import ciudadano from './src/modules/ciudadano/ciudadano.js';
+import usuario from './src/modules/usuario/usuario.js';
+import autenticarse from './src/modules/autenticacion/autenticacion.js';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -17,6 +19,8 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/", ciudadano);
+app.use("/", usuario);
+app.use("/", autenticarse);
 
 // encendemos la api asignandole un puerto
 let puerto = process.env.APP_PORT || 4100

@@ -5,24 +5,19 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+function obtenerEstadoTexto(estado) {
+    switch (estado) {
+        case 0: return "Muerto";
+        case 1: return "Vivo";
+        case 2: return "Congelado";
+        default: return "Desconocido";
+    }
+}
+
 export async function GenerarCodigoQR(datosFormulario)
 {
 
-    let estado = "";
-
-        switch (datosFormulario.estado) {
-            case 0:
-                estado = "Muerto";
-                break;
-            case 1:
-                estado = "Vivo";
-                break;
-            case 2:
-                estado = "Congelado";
-                break;
-            default:
-                break;
-        }
+    let estado = obtenerEstadoTexto(datosFormulario.estado);
 
         const qrData = `
             Codigo: ${datosFormulario.codigo}
@@ -34,7 +29,7 @@ export async function GenerarCodigoQR(datosFormulario)
             Estado: ${estado}
         `;
 
-        const qrFolder = path.join(__dirname, '../qrcode');
+        const qrFolder = path.join(__dirname, '../../../qrcode');
 
         const fileName = `qr_${datosFormulario.codigo}.png`;
         const filePath = path.join(qrFolder, fileName);

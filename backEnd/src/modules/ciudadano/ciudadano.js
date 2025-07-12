@@ -1,5 +1,5 @@
 import express from 'express';
-import conexion from './conexion.js';
+import conexion from '../../config/conexion.js';
 import { GenerarCodigoQR } from './qrcode.js';
 
 const ciudadano = express.Router();
@@ -48,37 +48,25 @@ ciudadano.post('/ciudadano/agregarCiudadano', async (req,res)=>{
 
         }
 
-        const qr = GenerarCodigoQR(datosFormulario);
+        const qr = await GenerarCodigoQR(datosFormulario);
 
         if(qr.length > 0)
         {
-            let datosFormulario = {
+           
+            datosFormulario.codigoQR = qr;
 
-            codigo: req.body.codigo,
-            nombre: req.body.nombre,
-            apellido: req.body.apellido,
-            apodo: req.body.apodo,
-            fecha_nacimiento: req.body.fecha_nacimiento,
-            planeta_origen: req.body.planeta_origen,
-            planeta_residencia:  req.body.planeta_residencia,
-            foto: req.body.foto,
-            codigoQR: `${qr}`,
-            estado: req.body.estado
+             let consulta = "insert into ciudadano set ?";
 
-        }
+            let [resultado] = await conexion.query(consulta,[datosFormulario]);
 
-        let consulta = "insert into ciudadano set ?";
-
-        let [resultado] = await conexion.query(consulta,[datosFormulario]);
-
-        res.send({
-            estado: "OK",
-            data: resultado,
-            mensaje: `QR generado y guardado en ${filePath}`
-        })
-        }
+             res.send({
+                estado: "OK",
+                data: resultado,
+                mensaje: `QR generado y guardado en ${qr}`
+            })
         
 
+        }
 
     } catch (error) {
         
@@ -99,6 +87,7 @@ ciudadano.put('/ciudadano/editarCiudadano/:codigo', async (req,res)=>{
 
         let datosFormulario = {
 
+            codigo: codigo,
             nombre: req.body.nombre,
             apellido: req.body.apellido,
             apodo: req.body.apodo,
@@ -110,33 +99,15 @@ ciudadano.put('/ciudadano/editarCiudadano/:codigo', async (req,res)=>{
 
         }
 
+        // Generar el nuevo código QR
+        const qr = await GenerarCodigoQR(datosFormulario);
+
+        // Añadir el nombre del QR generado al formulario
+        datosFormulario.codigoQR = qr;
+
         let consulta = "update ciudadano set ? where codigo = ?";
 
-        let [resultado] = await conexion.query(consulta,[datosFormulario,codigo]);
-
-        // Regenerar el contenido del QR con los datos nuevos
-        const qrData = `
-            Codigo: ${codigo}
-            Nombre: ${req.body.nombre} ${req.body.apellido}
-            Apodo: ${req.body.apodo || 'N/A'}
-            Fecha de Nacimiento: ${req.body.fecha_nacimiento}
-            Planeta de Origen: ${req.body.planeta_origen}
-            Planeta de Residencia: ${req.body.planeta_residencia}
-            Estado: ${req.body.estado}
-        `;
-
-        // Definir ruta del archivo QR para sobrescribir
-        const qrFolder = path.join(__dirname, '../qrcode');
-        const fileName = `qr_${codigo}.png`;
-        const filePath = path.join(qrFolder, fileName);
-
-        // Generar el nuevo código QR y sobrescribir archivo existente
-        await QRCode.toFile(filePath, qrData, {
-            color: {
-            dark: '#000000',
-            light: '#FFFFFF'
-        }
-        });
+        let [resultado] = await conexion.query(consulta,[datosFormulario, codigo]);
 
         res.send({
             estado: "OK",
