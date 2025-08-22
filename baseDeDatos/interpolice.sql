@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 12-07-2025 a las 07:38:08
+-- Tiempo de generación: 23-08-2025 a las 00:24:20
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -40,18 +40,46 @@ CREATE TABLE `ciudadano` (
   `estado` tinyint(3) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
 --
--- Volcado de datos para la tabla `ciudadano`
+-- Estructura de tabla para la tabla `delito`
 --
 
-INSERT INTO `ciudadano` (`codigo`, `nombre`, `apellido`, `apodo`, `fecha_nacimiento`, `planeta_origen`, `planeta_residencia`, `foto`, `codigoQR`, `estado`) VALUES
-('C27', 'kaila', 'gg', 'pro', '2025-07-10', 'Tierra', 'Tierra', NULL, 'qr_C27.png', 1),
-('D8', 'jjjjjjjjjjjjjjjj', 'franco', 'black', '0000-00-00', 'namekusein', 'tierra', NULL, 'qr_D8.png', 1),
-('J34', 'cristian', 'zapata', 'blasito', '2025-06-20', 'tierra', 'tierra', NULL, 'qr_J34.png', 1),
-('L23', 'santi', 'ruiz', '1', '2025-06-06', 'planeta x', 'tierra', NULL, 'qr_L23.png', 0),
-('L24', 'angel', 'Puertas', 'angel', '0000-00-00', 'Tierra', 'Marte', '', 'qr_L24.png', 1),
-('LP23', 'walter', 'arias', 'walso', '2100-06-04', 'tierra', 'tierra', NULL, 'qr_LP23.png', 1),
-('N23', 'pedro', 'dsf', '', '0000-00-00', 'Tierra', 'Marte', '', 'qr_N23.png', 1);
+CREATE TABLE `delito` (
+  `idDelito` int(11) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `descripcion` int(200) NOT NULL,
+  `nivel` varchar(70) DEFAULT NULL,
+  `tipo` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `historial_delitos`
+--
+
+CREATE TABLE `historial_delitos` (
+  `idRegistroDelito` int(11) NOT NULL,
+  `idCiudadano` varchar(50) NOT NULL,
+  `estado` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `registro_delito`
+--
+
+CREATE TABLE `registro_delito` (
+  `idRegistroDelito` int(11) NOT NULL,
+  `fechaDelito` datetime DEFAULT NULL,
+  `lugarDelito` varchar(100) DEFAULT NULL,
+  `descripcion` varchar(200) DEFAULT NULL,
+  `idDelito` int(11) NOT NULL,
+  `valor` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -64,13 +92,6 @@ CREATE TABLE `rol` (
   `nombre` varchar(100) NOT NULL,
   `descripcion` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `rol`
---
-
-INSERT INTO `rol` (`idRol`, `nombre`, `descripcion`) VALUES
-(1, 'policia', 'es un policia');
 
 -- --------------------------------------------------------
 
@@ -89,14 +110,6 @@ CREATE TABLE `usuario` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `usuario`
---
-
-INSERT INTO `usuario` (`idUsuario`, `nombre`, `fechaIngreso`, `contrasena`, `correo`, `estado`, `idRol`) VALUES
-(1, 'pedro', '2025-07-10 22:56:07', 'pedro123', 'pedro@gmail.com', 'Activo', 1),
-(2, 'pepe', '0000-00-00 00:00:00', '$2b$11$aKENs.sVmP.K/X7HkYXA4.yTJiEEP/H/0ojdrqW.ncHo0hNurpdTu', 'pepe@gmail.com', 'Desactivado', 1);
-
---
 -- Índices para tablas volcadas
 --
 
@@ -105,6 +118,27 @@ INSERT INTO `usuario` (`idUsuario`, `nombre`, `fechaIngreso`, `contrasena`, `cor
 --
 ALTER TABLE `ciudadano`
   ADD PRIMARY KEY (`codigo`);
+
+--
+-- Indices de la tabla `delito`
+--
+ALTER TABLE `delito`
+  ADD PRIMARY KEY (`idDelito`);
+
+--
+-- Indices de la tabla `historial_delitos`
+--
+ALTER TABLE `historial_delitos`
+  ADD PRIMARY KEY (`idRegistroDelito`,`idCiudadano`),
+  ADD KEY `fk_registro_delito_has_ciudadano_ciudadano1_idx` (`idCiudadano`),
+  ADD KEY `fk_registro_delito_has_ciudadano_registro_delito1_idx` (`idRegistroDelito`);
+
+--
+-- Indices de la tabla `registro_delito`
+--
+ALTER TABLE `registro_delito`
+  ADD PRIMARY KEY (`idRegistroDelito`),
+  ADD KEY `fk_registro_delito_delito1_idx` (`idDelito`);
 
 --
 -- Indices de la tabla `rol`
@@ -124,6 +158,12 @@ ALTER TABLE `usuario`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `delito`
+--
+ALTER TABLE `delito`
+  MODIFY `idDelito` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `rol`
 --
 ALTER TABLE `rol`
@@ -138,6 +178,19 @@ ALTER TABLE `usuario`
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `historial_delitos`
+--
+ALTER TABLE `historial_delitos`
+  ADD CONSTRAINT `fk_registro_delito_has_ciudadano_ciudadano1` FOREIGN KEY (`idCiudadano`) REFERENCES `ciudadano` (`codigo`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_registro_delito_has_ciudadano_registro_delito1` FOREIGN KEY (`idRegistroDelito`) REFERENCES `registro_delito` (`idRegistroDelito`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `registro_delito`
+--
+ALTER TABLE `registro_delito`
+  ADD CONSTRAINT `fk_registro_delito_delito1` FOREIGN KEY (`idDelito`) REFERENCES `delito` (`idDelito`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Filtros para la tabla `usuario`
